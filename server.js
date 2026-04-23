@@ -22,20 +22,29 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// 🔥 ADD THIS (CORS CONFIG SEPARATE)
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://kognivex.in',
+    'https://www.kognivex.in'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
 // Middlewares
 app.use(helmet());
+
+// 🔥 ADD THIS (preflight fix - VERY IMPORTANT)
+app.options('*', cors(corsOptions));
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(
-  cors({
-    origin: [
-       'http://localhost:3000',
-    'https://kognivex.in',          // ✅ your domain
-    'https://www.kognivex.in' 
-    ],
-    credentials: true
-  })
-);
+
 app.use(morgan('dev'));
 app.use('/uploads', express.static('uploads'));
 
